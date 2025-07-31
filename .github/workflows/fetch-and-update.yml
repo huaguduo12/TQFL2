@@ -42,6 +42,8 @@ jobs:
           # --- 选填项 (如果不在 Secrets 中设置, 脚本会使用默认值) ---
           COUNTRY_ORDER: ${{ secrets.COUNTRY_ORDER }}
           LINKS_PER_COUNTRY: ${{ secrets.LINKS_PER_COUNTRY }}
+          LINK_PREFIX: ${{ secrets.LINK_PREFIX }}
+          LINK_SUFFIX: ${{ secrets.LINK_SUFFIX }}
           
         run: |
           # 更新了调试信息以匹配新变量
