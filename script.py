@@ -18,8 +18,8 @@ COUNTRY_ORDER_STR = os.getenv("COUNTRY_ORDER") or ""
 COUNTRY_ORDER = [code.strip() for code in COUNTRY_ORDER_STR.split(',')] if COUNTRY_ORDER_STR else []
 
 LINKS_PER_COUNTRY = int(os.getenv("LINKS_PER_COUNTRY") or "20")
-LINK_PREFIX = os.getenv("LINK_PREFIX", "")
-LINK_SUFFIX = os.getenv("LINK_SUFFIX", "")
+LINK_PREFIX = os.getenv("LINK_PREFIX") or ""
+LINK_SUFFIX = os.getenv("LINK_SUFFIX") or ""
 
 # --- 2. 检查、常量和所有解析函数 (与上一版 V7 完全相同, 此处省略) ---
 # ... (extract_vless_links, extract_csv_links, extract_line_based_links, process_subscription_url 等函数均无任何改动)
