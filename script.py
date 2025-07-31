@@ -5,27 +5,17 @@ import requests
 from urllib.parse import unquote
 from github import Github
 
-# --- 1. 从环境变量获取配置 ---
+# --- 配置和环境变量部分 (无任何改动) ---
 GITHUB_TOKEN = os.getenv("MY_GITHUB_TOKEN")
 REPO_NAME = os.getenv("REPO_NAME")
 FILE_PATH = os.getenv("FILE_PATH")
 WEBPAGE_URLS = os.getenv("WEBPAGE_URLS", "").strip().splitlines()
-
-# 可选：国家/地区代码排序, 如果环境变量为空或不存在, 则使用默认值
 COUNTRY_ORDER_STR = os.getenv("COUNTRY_ORDER") or "HK,SG,JP,TW,KR,US,CA,AU,GB,FR,IT,NL,DE,RU,PL"
 COUNTRY_ORDER = [code.strip() for code in COUNTRY_ORDER_STR.split(',')]
-
-# 可选：每个国家/地区保留的链接数量, 如果环境变量为空或不存在, 则使用默认值 "20"
 LINKS_PER_COUNTRY = int(os.getenv("LINKS_PER_COUNTRY") or "20")
-
-# <<< 新增功能区 START >>>
-# 可选：为国家代码添加自定义前后缀
 LINK_PREFIX = os.getenv("LINK_PREFIX", "")
 LINK_SUFFIX = os.getenv("LINK_SUFFIX", "")
-# <<< 新增功能区 END >>>
 
-
-# --- 2. 检查核心环境变量 ---
 if not GITHUB_TOKEN or not REPO_NAME or not FILE_PATH:
     print("错误: 缺少必要的 GitHub 环境变量 (MY_GITHUB_TOKEN, REPO_NAME, FILE_PATH)")
     exit(1)
@@ -33,7 +23,6 @@ if not WEBPAGE_URLS:
     print("错误: 环境变量 WEBPAGE_URLS 未设置或为空。")
     exit(1)
 
-# --- 3. 国家/地区名称到代码的映射 ---
 COUNTRY_MAPPING = {
     "香港": "HK", "澳门": "MO", "台湾": "TW", "韩国": "KR", "日本": "JP",
     "新加坡": "SG", "美国": "US", "英国": "GB", "法国": "FR", "德国": "DE",
@@ -43,7 +32,7 @@ COUNTRY_MAPPING = {
     "都柏林": "IE", "西班牙": "ES", "奥地利": "AT", "罗马尼亚": "RO", "波兰": "PL"
 }
 
-# --- 4. 核心处理函数 ---
+# --- 核心处理函数 ---
 
 def extract_vless_links(decoded_content):
     regex = re.compile(r'vless://[a-zA-Z0-9\-]+@([^:]+):(\d+)\?[^#]+#([^\n\r]+)')
@@ -63,22 +52,34 @@ def extract_vless_links(decoded_content):
                 country_code = code_match.group(1)
 
         if country_code != "UNKNOWN":
-            # <<< 修改点: 应用前后缀 >>>
             formatted_link = f"{ip}:{port}#{LINK_PREFIX}{country_code}{LINK_SUFFIX}"
             links.append({"link": formatted_link, "country_code": country_code})
     return links
 
+# <<< 修改点 START >>>
 def extract_plain_text_links(plain_content):
-    regex = re.compile(r'([^:]+:\d+)#([A-Z]{2})')
+    """
+    从纯文本内容 (IP:端口#代码) 中提取链接。
+    此版本经过优化，可以处理多余的空行和空白。
+    """
     links = []
-    for match in regex.finditer(plain_content):
-        link_part = match.group(1)
-        country_code = match.group(2)
-        
-        # <<< 修改点: 应用前后缀 >>>
-        formatted_link = f"{link_part}#{LINK_PREFIX}{country_code}{LINK_SUFFIX}"
-        links.append({"link": formatted_link, "country_code": country_code})
+    # 按行分割，有效处理各种换行符，并去除空行
+    for line in plain_content.strip().splitlines():
+        # 清理每行前后的空白字符
+        clean_line = line.strip()
+        if not clean_line:
+            continue # 如果是空行，则跳过
+
+        # 在清理过的单行上进行匹配
+        match = re.search(r'([^:]+:\d+)#([A-Z]{2})', clean_line)
+        if match:
+            link_part = match.group(1)
+            country_code = match.group(2)
+            
+            formatted_link = f"{link_part}#{LINK_PREFIX}{country_code}{LINK_SUFFIX}"
+            links.append({"link": formatted_link, "country_code": country_code})
     return links
+# <<< 修改点 END >>>
 
 def process_subscription_url(url):
     print(f"正在处理 URL: {url}")
@@ -104,6 +105,8 @@ def process_subscription_url(url):
     except Exception as e:
         print(f"  > 处理发生未知错误: {e}")
         return []
+
+# --- 其余函数 (无任何改动) ---
 
 def filter_and_sort_links(all_links, country_order, limit):
     grouped_links = {}
