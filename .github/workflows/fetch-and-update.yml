@@ -1,0 +1,53 @@
+name: Fetch and Update Web Content
+
+on:
+  schedule:
+    - cron: "2 23 * * *"  # 北京时间 7:02
+    - cron: "2 4 * * *"   # 北京时间 12:02
+    - cron: "2 11 * * *"  # 北京时间 19:02
+  workflow_dispatch:  # 允许手动触发
+  push:
+    branches:
+      - main
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: 检出代码仓库 (无需修改)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: 设置 Python 环境 (无需修改)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      # Step 3: 安装依赖 (无需修改)
+      - name: Install dependencies
+        run: pip install requests PyGithub
+
+      # Step 4: 运行 Python 脚本 (【重要】此步骤已更新)
+      - name: Run script
+        env:
+          # --- 必填项 ---
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          FILE_PATH: ${{ secrets.FILE_PATH }}
+          # 'WEBPAGE_URL' 已被 'WEBPAGE_URLS' 替换
+          WEBPAGE_URLS: ${{ secrets.WEBPAGE_URLS }}
+          
+          # --- 选填项 (如果不在 Secrets 中设置, 脚本会使用默认值) ---
+          COUNTRY_ORDER: ${{ secrets.COUNTRY_ORDER }}
+          LINKS_PER_COUNTRY: ${{ secrets.LINKS_PER_COUNTRY }}
+          
+        run: |
+          # 更新了调试信息以匹配新变量
+          echo "DEBUG: REPO_NAME=${REPO_NAME}"
+          echo "DEBUG: FILE_PATH=${FILE_PATH}"
+          echo "DEBUG: WEBPAGE_URLS=【已设置】" # URLS 内容可能很长, 不直接显示
+          echo "DEBUG: COUNTRY_ORDER=${COUNTRY_ORDER}"
+          echo "DEBUG: LINKS_PER_COUNTRY=${LINKS_PER_COUNTRY}"
+          python script.py
