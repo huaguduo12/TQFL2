@@ -2,5 +2,5 @@
 - REPO_NAME=路径名
 - FILE_PATH=文件名
 - WEBPAGE_URLS=链接地址，多个换行处理
-- COUNTRY_ORDER=排序
-- LINKS_PER_COUNTRY=每个国家数量
+- COUNTRY_ORDER=排序（可选）
+- LINKS_PER_COUNTRY=每个国家数量（可选）
