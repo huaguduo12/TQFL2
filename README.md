@@ -1,1 +1,4 @@
 # TQFL2
+- WEBPAGE_URLS=链接地址，多个换行处理
+- COUNTRY_ORDER=排序
+- LINKS_PER_COUNTRY=每个国家数量
