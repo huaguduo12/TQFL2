@@ -36,7 +36,6 @@ jobs:
           MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           REPO_NAME: ${{ secrets.REPO_NAME }}
           FILE_PATH: ${{ secrets.FILE_PATH }}
-          # 'WEBPAGE_URL' 已被 'WEBPAGE_URLS' 替换
           WEBPAGE_URLS: ${{ secrets.WEBPAGE_URLS }}
           
           # --- 选填项 (如果不在 Secrets 中设置, 脚本会使用默认值) ---
@@ -44,6 +43,8 @@ jobs:
           LINKS_PER_COUNTRY: ${{ secrets.LINKS_PER_COUNTRY }}
           LINK_PREFIX: ${{ secrets.LINK_PREFIX }}
           LINK_SUFFIX: ${{ secrets.LINK_SUFFIX }}
+          OUTPUT_FORMAT: ${{ secrets.OUTPUT_FORMAT }}
+          SELECTION_MODE: ${{ secrets.SELECTION_MODE }}
           
         run: |
           # 更新了调试信息以匹配新变量
@@ -52,4 +53,6 @@ jobs:
           echo "DEBUG: WEBPAGE_URLS=【已设置】" # URLS 内容可能很长, 不直接显示
           echo "DEBUG: COUNTRY_ORDER=${COUNTRY_ORDER}"
           echo "DEBUG: LINKS_PER_COUNTRY=${LINKS_PER_COUNTRY}"
+          echo "DEBUG: OUTPUT_FORMAT=${OUTPUT_FORMAT}"
+          echo "DEBUG: SELECTION_MODE=${SELECTION_MODE}"          
           python script.py
