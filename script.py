@@ -19,7 +19,7 @@ COUNTRY_ORDER = [code.strip() for code in COUNTRY_ORDER_STR.split(',')] if COUNT
 
 LINKS_PER_COUNTRY = int(os.getenv("LINKS_PER_COUNTRY") or "20")
 LINK_PREFIX = os.getenv("LINK_PREFIX") or ""
-LINK_SUFFIX = os.getenv("LINK_SUFFIX") or "👍"
+LINK_SUFFIX = os.getenv("LINK_SUFFIX") or ""
 
 OUTPUT_FORMAT = os.getenv("OUTPUT_FORMAT") or "full"
 SELECTION_MODE = os.getenv("SELECTION_MODE") or "sequential" # <--- 新增：提取模式控制器
