@@ -7,3 +7,4 @@
 - LINK_PREFIX=国家代码前名（名HK）（可选）
 - LINK_SUFFIX=国家代码后名（HK名）（可选）
 - OUTPUT_FORMAT=输出格式 例如：（simple或无：US），（full：🇺🇸美国1）代码第24行
+- SELECTION_MODE=随机或顺序获取 （random随机抽取）,（sequential或不设置，为顺序获取）代码第25行
